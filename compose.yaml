@@ -6,7 +6,6 @@ services:
     depends_on:
       - database
     restart: unless-stopped
-    container_name: asera-api
     healthcheck:
       test: "curl -f http://localhost:2019/metrics || exit 1"
       interval: 60s
@@ -45,7 +44,7 @@ services:
     image: ${IMAGES_PREFIX:-}app-pwa
     container_name: asera-pwa
     environment:
-      NEXT_PUBLIC_ENTRYPOINT: http://asera-api
+      NEXT_PUBLIC_ENTRYPOINT: http://php
 
 ###> doctrine/doctrine-bundle ###
   database:
