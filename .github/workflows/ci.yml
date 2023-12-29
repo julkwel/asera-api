@@ -44,7 +44,7 @@ jobs:
       -
         name: Try to restart services
         if: steps.startAttempt.outcome == 'failure'
-        run: docker compose up
+        run: docker compose up --wait
         continue-on-error: false
         timeout-minutes: 10
       -
