@@ -40,7 +40,7 @@ jobs:
         run: docker compose up --wait
       -
         name: Check HTTP reachability
-        run: curl -v -o /dev/null http://localhost
+        run: curl -v -o /dev/null http://localhost:8080
       -
         name: Check API reachability
         run: curl -vk -o /dev/null https://localhost
