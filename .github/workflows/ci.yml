@@ -38,9 +38,13 @@ jobs:
       -
         name: Start services
         run: docker compose up --wait
-        with:
-          max_attempts: 3
-          retry_on: error
+        id: startAttempt
+        continue-on-error: true
+      -
+        name: Try to restart services
+        if: steps.startAttempt.outcome == 'failure'
+        run: docker compose up --wait
+        continue-on-error: false
       -
         name: Check HTTP reachability
         run: curl -v -o /dev/null http://localhost
