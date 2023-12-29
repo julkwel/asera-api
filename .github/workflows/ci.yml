@@ -24,17 +24,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       -
         name: Build Docker Images
-        uses: docker/bake-action@v4
-        with:
-          pull: true
-          load: true
-          files: |
-            compose.yaml
-            compose.override.yaml
-          set: |
-            *.cache-from=type=gha,scope=${{github.ref}}
-            *.cache-from=type=gha,scope=refs/heads/main
-            *.cache-to=type=gha,scope=${{github.ref}},mode=max
+        run: docker compose build
       -
         name: Start services
         run: docker compose up --wait --build
