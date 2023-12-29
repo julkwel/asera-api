@@ -7,6 +7,12 @@ services:
       - database
     restart: unless-stopped
     container_name: asera-api
+    healthcheck:
+      test: "curl -f http://localhost:2019/metrics || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     environment:
       PWA_UPSTREAM: pwa:3000
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
