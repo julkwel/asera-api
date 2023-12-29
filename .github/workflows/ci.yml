@@ -44,8 +44,9 @@ jobs:
       -
         name: Try to restart services
         if: steps.startAttempt.outcome == 'failure'
-        run: docker compose up --wait
+        run: docker compose up
         continue-on-error: false
+        timeout-minutes: 10
       -
         name: Check HTTP reachability
         run: curl -v -o /dev/null http://localhost
