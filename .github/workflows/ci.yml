@@ -15,7 +15,6 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
-    container: ubuntu
     steps:
       -
         name: Checkout
