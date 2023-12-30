@@ -43,6 +43,9 @@ class User
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $password = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $sex = null;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -104,6 +107,18 @@ class User
     public function setPassword(?string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getSex(): ?int
+    {
+        return $this->sex;
+    }
+
+    public function setSex(int $sex): static
+    {
+        $this->sex = $sex;
 
         return $this;
     }
