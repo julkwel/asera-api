@@ -38,18 +38,27 @@ jobs:
       -
         name: Start services
         run: docker compose up --wait
+
+      -
+        name: Generate JWT key
+        run: docker compose exec -T php bin/console lexik:jwt:generate-keypair
+
       -
         name: Check HTTP reachability
         run: curl -v -o /dev/null http://localhost:8080
+
       -
         name: Check API reachability
         run: curl -vk -o /dev/null https://localhost
+
       -
         name: Check PWA reachability
         run: "curl -vk -o /dev/null -H 'Accept: text/html' https://localhost"
+
       -
         name: Create test database
         run: docker compose exec -T php bin/console -e test doctrine:database:create
+
       -
         name: Generate migrations
         run: docker compose exec -T php bin/console -e test doctrine:schema:update --force
@@ -57,6 +66,7 @@ jobs:
       -
         name: Run PHPUnit
         run: docker compose exec -T php bin/phpunit
+
       -
         name: Doctrine Schema Validator
         run: docker compose exec -T php bin/console -e test doctrine:schema:validate
