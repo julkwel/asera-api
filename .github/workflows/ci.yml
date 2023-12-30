@@ -52,10 +52,8 @@ jobs:
         run: docker compose exec -T php bin/console -e test doctrine:database:create
       -
         name: Generate migrations
-        run: docker compose exec -T php bin/console -e test make:migration
-      -
-        name: Run migrations
-        run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
+        run: docker compose exec -T php bin/console -e test doctrine:schema:update --force
+
       -
         name: Run PHPUnit
         run: docker compose exec -T php bin/phpunit
