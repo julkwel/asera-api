@@ -51,6 +51,9 @@ jobs:
         name: Create test database
         run: docker compose exec -T php bin/console -e test doctrine:database:create
       -
+        name: Generate migrations
+        run: docker compose exec -T php bin/console -e test doctrine:migrations:generate
+      -
         name: Run migrations
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
       -
