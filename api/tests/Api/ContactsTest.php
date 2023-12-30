@@ -12,8 +12,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class ContactsTest extends ApiTestCase
 {
-    use RefreshDatabaseTrait;
-
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
