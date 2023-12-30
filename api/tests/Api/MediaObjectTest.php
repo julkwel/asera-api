@@ -26,7 +26,7 @@ class MediaObjectTest extends ApiTestCase
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function testCreateAMediaObject(): void
+    public function testCreateMediaObject(): void
     {
         $file = new UploadedFile('fixtures/Media/img.png', 'image.png');
         $client = self::createClient();
