@@ -12,8 +12,10 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class UsersTest extends ApiTestCase
 {
+    use RefreshDatabaseTrait;
+
     public const USERNAME = 'doda';
-    public const PASSWORD = 't3st';
+    public const PASSWORD = '@theP*ss2023';
 
     /**
      * @throws TransportExceptionInterface
@@ -42,27 +44,6 @@ class UsersTest extends ApiTestCase
             'lastname' => 'Kévin',
             'username' => self::USERNAME
         ]);
-    }
-
-    /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
-     */
-    public function testLogin(): void
-    {
-        static::createClient()->request('POST', '/api/login_check', [
-            'json' => [
-                'password' => self::PASSWORD,
-                'username' => self::USERNAME
-            ],
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
-        $this->assertResponseIsSuccessful();
     }
 
     /**

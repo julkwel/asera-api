@@ -20,7 +20,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
-use Serializable;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity]
 #[ApiResource(
@@ -71,6 +72,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $salt = null;
 
+    #[Assert\PasswordStrength([
+        'minScore' => PasswordStrength::STRENGTH_WEAK,
+        'message' => 'Your password is too easy to guess. Asera\'s security policy requires to use a stronger password.'
+    ])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string

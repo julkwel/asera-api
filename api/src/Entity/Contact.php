@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity()]
+#[ORM\Entity]
 #[ApiResource(mercure: true)]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 #[UniqueEntity(fields: 'email', message: 'This email is already used.')]
@@ -41,6 +41,9 @@ class Contact
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stackoverflow = null;
+
+    #[ORM\ManyToOne(inversedBy: 'contact')]
+    private ?Company $company = null;
 
     public function getId(): ?string
     {
@@ -103,6 +106,18 @@ class Contact
     public function setStackoverflow(?string $stackoverflow): static
     {
         $this->stackoverflow = $stackoverflow;
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }
