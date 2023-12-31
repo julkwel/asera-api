@@ -179,7 +179,7 @@ class Job
      * @return string
      */
     #[Groups(['job:read'])]
-    public function getTypeString()
+    public function getTypeString(): string
     {
         return JobConstant::JOB_TYPE[$this->type];
     }

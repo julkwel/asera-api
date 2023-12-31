@@ -100,6 +100,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Job::class, mappedBy: 'candidates')]
     private Collection $jobs;
 
+    #[ORM\OneToOne(inversedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[Groups(['user:read', 'user:write'])]
+    private ?UserMedia $media = null;
+
     public function __construct()
     {
         $this->jobs = new ArrayCollection();
@@ -249,6 +253,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getOwner(): User
     {
+        return $this;
+    }
+
+    public function getMedia(): ?UserMedia
+    {
+        return $this->media;
+    }
+
+    public function setMedia(?UserMedia $media): static
+    {
+        $this->media = $media;
+
         return $this;
     }
 }

@@ -52,7 +52,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             deserialize: false
         )
     ],
-    normalizationContext: ['groups' => ['media_object:read']]
+    normalizationContext: ['groups' => ['media_object:read', 'company:read', 'user:read']]
 )]
 class MediaObject
 {
@@ -63,7 +63,7 @@ class MediaObject
     private ?Uuid $id = null;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
-    #[Groups(['media_object:read'])]
+    #[Groups(['media_object:read', 'company:read', 'user:read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
@@ -76,5 +76,11 @@ class MediaObject
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    // Whenever user called this object to string
+    public function __toString(): string
+    {
+        return $this->contentUrl;
     }
 }
