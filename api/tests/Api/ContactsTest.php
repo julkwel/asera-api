@@ -33,12 +33,7 @@ class ContactsTest extends ApiTestCase
             ],
         ]);
 
-        $this->assertResponseStatusCodeSame(201);
-        $this->assertJsonContains([
-            '@context' => '/contexts/Contact',
-            '@type' => 'Contact',
-            'email' => 'test@test.com'
-        ]);
+        $this->assertResponseStatusCodeSame(405);
     }
 
     /**

@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -12,10 +15,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ApiResource(
-    normalizationContext: ['groups' => ['user:read', 'default', 'company:read']],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Delete()
+    ],
+    normalizationContext: ['groups' => ['user:read', 'default', 'company:read', 'job:read']],
     denormalizationContext: ['groups' => ['user:write', 'contact:write', 'default', 'company:write']],
     mercure: true
 )]
@@ -33,19 +42,20 @@ class Contact
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['user:read', 'company:read'])]
+    #[Groups(['user:read', 'company:read', 'job:read', 'job:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write'])]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write', 'job:read', 'company:read'])]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write'])]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write', 'job:read', 'company:read'])]
     private ?array $phones = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'contact:write'])]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'job:read', 'company:read'])]
     private ?string $linkedin = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -60,7 +70,7 @@ class Contact
     private ?Company $company = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write'])]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write', 'job:read', 'company:read'])]
     private ?string $web = null;
 
     /**

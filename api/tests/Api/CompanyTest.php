@@ -27,7 +27,14 @@ class CompanyTest extends ApiTestCase
         static::createClient()->request('POST', '/companies', [
             'json' => [
                 'name' => 'bonbon',
-                'address' => 'Tana'
+                'address' => 'Tana',
+                'contacts' => [
+                    [
+                        'email' => 'test@company.com',
+                        'phone' => ['097 876 76', '097 876 78', '097 876 77',],
+                        'web' => 'company.com'
+                    ]
+                ]
             ],
             'headers' => [
                 'Content-Type' => 'application/ld+json',

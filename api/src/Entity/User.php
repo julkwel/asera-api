@@ -43,6 +43,11 @@ use Symfony\Component\Validator\Constraints\PasswordStrength;
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 #[ORM\Table(name:"`user`")]
 #[UniqueEntity(fields: 'username', message: 'There is already an account with this username')]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[Put(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[Get(security: "is_granted('ROLE_ADMIN') or object.getOwner() == user")]
+#[GetCollection(security: "is_granted('ROLE_ADMIN')")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
@@ -239,6 +244,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $job->removeCandidate($this);
         }
 
+        return $this;
+    }
+
+    public function getOwner(): User
+    {
         return $this;
     }
 }

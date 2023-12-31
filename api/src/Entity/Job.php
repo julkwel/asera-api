@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Constant\JobConstant;
 use App\Repository\JobRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,6 +15,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
@@ -57,6 +59,15 @@ class Job
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'jobs')]
     #[Groups(['job:read', 'job:write'])]
     private Collection $candidates;
+
+    #[ORM\Column]
+    #[Groups(['job:read', 'job:write'])]
+    #[Assert\Choice(choices: JobConstant::JOB_TYPE_CONSTRAINT, message: 'Choose a valid job type.')]
+    private ?int $type = null;
+
+    #[ORM\ManyToOne(inversedBy: 'jobs')]
+    #[Groups(['job:read', 'job:write'])]
+    private ?Company $company = null;
 
     public function __construct()
     {
@@ -148,6 +159,39 @@ class Job
     public function removeCandidate(User $candidate): static
     {
         $this->candidates->removeElement($candidate);
+
+        return $this;
+    }
+
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    #[Groups(['job:read'])]
+    public function getTypeString()
+    {
+        return JobConstant::JOB_TYPE[$this->type];
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }
