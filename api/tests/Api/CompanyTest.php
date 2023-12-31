@@ -34,7 +34,9 @@ class CompanyTest extends ApiTestCase
                         'phone' => ['097 876 76', '097 876 78', '097 876 77',],
                         'web' => 'company.com'
                     ]
-                ]
+                ],
+                'nif' => '34557 7889 9800',
+                'stat' => 'Madagascar'
             ],
             'headers' => [
                 'Content-Type' => 'application/ld+json',
