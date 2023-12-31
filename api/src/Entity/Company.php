@@ -12,11 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
-#[ApiResource(mercure: true)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['company:read']],
+    denormalizationContext: ['groups' => ['company:write']],
+    mercure: true
+)]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 #[UniqueEntity(fields: 'name', message: 'Name already in use')]
 class Company
@@ -27,28 +32,36 @@ class Company
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['company:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Groups(['company:write', 'company:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['company:write', 'company:read'])]
     private ?string $address = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Contact::class)]
+    #[Groups(['company:write', 'company:read'])]
     private Collection $contact;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['company:write', 'company:read'])]
     private ?string $nif = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['company:write', 'company:read'])]
     private ?string $stat = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['company:write', 'company:read'])]
     private ?int $type = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ApiProperty(types: ['https://schema.org/image'])]
+    #[Groups(['company:write', 'company:read'])]
     private ?MediaObject $logo = null;
 
     public function __construct()

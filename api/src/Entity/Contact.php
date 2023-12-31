@@ -15,8 +15,8 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ApiResource(
-    normalizationContext: ['groups' => ['user:read', 'default']],
-    denormalizationContext: ['groups' => ['user:write', 'contact:write', 'default']],
+    normalizationContext: ['groups' => ['user:read', 'default', 'company:read']],
+    denormalizationContext: ['groups' => ['user:write', 'contact:write', 'default', 'company:write']],
     mercure: true
 )]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
@@ -33,15 +33,15 @@ class Contact
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups(['user:read', 'user:write', 'contact:write'])]
+    #[Groups(['user:read', 'company:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'contact:write'])]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write'])]
     private ?string $email = null;
 
-    #[ORM\Column(type: Types::JSON, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'contact:write'])]
+    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write'])]
     private ?array $phones = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -58,6 +58,10 @@ class Contact
 
     #[ORM\ManyToOne(inversedBy: 'contact')]
     private ?Company $company = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'contact:write', 'company:write'])]
+    private ?string $web = null;
 
     /**
      * When this object is called to be a string, force to return email
@@ -141,6 +145,18 @@ class Contact
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getWeb(): ?string
+    {
+        return $this->web;
+    }
+
+    public function setWeb(?string $web): static
+    {
+        $this->web = $web;
 
         return $this;
     }
