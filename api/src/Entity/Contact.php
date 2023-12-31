@@ -10,12 +10,20 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
-#[ApiResource(mercure: true)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['user:read', 'default']],
+    denormalizationContext: ['groups' => ['user:write', 'contact:write', 'default']],
+    mercure: true
+)]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
-#[UniqueEntity(fields: 'email', message: 'This email is already used.')]
+#[UniqueEntity(
+    fields: 'email',
+    message: 'This email is already used.'
+)]
 class Contact
 {
     use TimestampableEntity;
@@ -25,25 +33,40 @@ class Contact
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['user:read', 'user:write', 'contact:write'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'user:write', 'contact:write'])]
     private ?string $email = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'contact:write'])]
     private ?array $phones = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'contact:write'])]
     private ?string $linkedin = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'contact:write'])]
     private ?string $github = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'contact:write'])]
     private ?string $stackoverflow = null;
 
     #[ORM\ManyToOne(inversedBy: 'contact')]
     private ?Company $company = null;
+
+    /**
+     * When this object is called to be a string, force to return email
+     * Do not give an error
+     */
+    public function __toString(): string
+    {
+        return $this->email;
+    }
 
     public function getId(): ?string
     {

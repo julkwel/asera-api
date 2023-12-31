@@ -19,6 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
@@ -33,6 +34,8 @@ use Symfony\Component\Validator\Constraints\PasswordStrength;
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
     ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
     mercure: true,
 )]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
@@ -47,27 +50,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['user:read', 'user:write'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $lastname = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[Groups(['user:read', 'user:write'])]
+    #[Assert\Valid]
     private ?Contact $contact = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $password = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
     private ?int $sex = null;
 
     #[ORM\Column(type: Types::JSON)]
+    #[Groups(['user:read', 'user:write'])]
     private array $roles = ['ROLE_USER'];
 
     private ?string $salt = null;
@@ -76,6 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'minScore' => PasswordStrength::STRENGTH_WEAK,
         'message' => 'Your password is too easy to guess. Asera\'s security policy requires to use a stronger password.'
     ])]
+    #[Groups(['user:write'])]
     private ?string $plainPassword = null;
 
     public function getId(): ?string
