@@ -4,6 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CompanyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false)]
 #[UniqueEntity(fields: 'name', message: 'Name already in use')]
+#[Delete(security: "is_granted('ROLE_ADMIN')")]
+#[Post(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Put(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Patch(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
 class Company
 {
     use SoftDeleteableEntity;

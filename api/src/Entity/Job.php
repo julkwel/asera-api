@@ -3,6 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Constant\JobConstant;
 use App\Repository\JobRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,6 +28,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['job:write']],
     mercure: true
 )]
+#[Delete(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Post(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Put(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Patch(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
 class Job
 {
     use TimestampableEntity;

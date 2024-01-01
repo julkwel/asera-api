@@ -6,6 +6,9 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -33,6 +36,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     fields: 'email',
     message: 'This email is already used.'
 )]
+#[Delete(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Put(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
+#[Patch(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
 class Contact
 {
     use TimestampableEntity;
