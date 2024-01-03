@@ -8,17 +8,19 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Constant\JobConstant;
+use App\Entity\Enum\JobType;
+use App\Entity\Enum\WorkType;
 use App\Repository\JobRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: JobRepository::class)]
@@ -26,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['job:read']],
     denormalizationContext: ['groups' => ['job:write']],
-    mercure: true
+    mercure: true,
 )]
 #[Delete(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
 #[Post(security: "is_granted('IS_AUTHENTICATED_FULLY')")]
@@ -68,14 +70,19 @@ class Job
     #[Groups(['job:read', 'job:write'])]
     private Collection $candidates;
 
-    #[ORM\Column]
-    #[Groups(['job:read', 'job:write'])]
-    #[Assert\Choice(choices: JobConstant::JOB_TYPE_CONSTRAINT, message: 'Choose a valid job type.')]
-    private ?int $type = null;
-
     #[ORM\ManyToOne(inversedBy: 'jobs')]
     #[Groups(['job:read', 'job:write'])]
     private ?Company $company = null;
+
+    #[ORM\Column]
+    #[Assert\Type(type: JobType::class)]
+    #[Groups(['job:read', 'job:write'])]
+    private ?int $contract = 1;
+
+    #[ORM\Column]
+    #[Assert\Type(type: WorkType::class)]
+    #[Groups(['job:read', 'job:write'])]
+    private ?int $workType = 1;
 
     public function __construct()
     {
@@ -171,18 +178,6 @@ class Job
         return $this;
     }
 
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType(int $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     /**
      * @return string
      */
@@ -200,6 +195,30 @@ class Job
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getContract(): ?int
+    {
+        return $this->contract;
+    }
+
+    public function setContract(int $contract): static
+    {
+        $this->contract = $contract;
+
+        return $this;
+    }
+
+    public function getWorkType(): ?int
+    {
+        return $this->workType;
+    }
+
+    public function setWorkType(int $workType): static
+    {
+        $this->workType = $workType;
 
         return $this;
     }
