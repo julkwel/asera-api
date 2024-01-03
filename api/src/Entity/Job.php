@@ -7,7 +7,6 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Constant\JobConstant;
 use App\Entity\Enum\JobType;
 use App\Entity\Enum\WorkType;
 use App\Repository\JobRepository;
@@ -176,15 +175,6 @@ class Job
         $this->candidates->removeElement($candidate);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    #[Groups(['job:read'])]
-    public function getTypeString(): string
-    {
-        return JobConstant::JOB_TYPE[$this->type];
     }
 
     public function getCompany(): ?Company
